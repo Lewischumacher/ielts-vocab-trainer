@@ -437,8 +437,12 @@ function nextCard() {
     state.isFlipped = false;
     state.quizShown = false;
     renderCard();
-    // Scroll to top of card
-    document.getElementById('card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Scroll to top of card (Safari-compatible)
+    try {
+        document.getElementById('card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch(e) {
+        document.getElementById('card').scrollIntoView();
+    }
 }
 
 function markKnown() {
@@ -617,6 +621,14 @@ function init() {
 }
 
 init();
+
+// Falls back to showing content if JS partially fails
+document.addEventListener('DOMContentLoaded', function() {
+    var card = document.getElementById('cardContent');
+    if (card && !card.innerHTML.trim()) {
+        card.innerHTML = '<div style="text-align:center;padding:40px;">加载中... 如卡住请刷新页面</div>';
+    }
+});
 </script>
 </body>
 </html>
